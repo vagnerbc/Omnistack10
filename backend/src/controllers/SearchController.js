@@ -22,8 +22,6 @@ module.exports = {
       }
     });
 
-    console.log(req.query);
-
     return res.json({ devs });
   }
 };

@@ -1,6 +1,7 @@
 const axios = require("axios");
 const Dev = require("../models/Dev");
 const parseStringAsArray = require("../utils/parseStringAsArray");
+const { findConnections, sendMessage } = require("../websocket");
 
 // index, show, store, update, destroy
 
@@ -23,7 +24,9 @@ module.exports = {
 
       const { name = login, avatar_url, bio } = response.data;
 
+      console.log(techs);
       const techsArray = parseStringAsArray(techs);
+      console.log(techsArray);
 
       const location = {
         type: "Point",
@@ -38,6 +41,16 @@ module.exports = {
         techs: techsArray,
         location
       });
+
+      const sendSocketMessageTo = findConnections(
+        {
+          latitude,
+          longitude
+        },
+        techsArray
+      );
+
+      sendMessage(sendSocketMessageTo, "new-dev", dev);
     }
 
     return res.json(dev);
